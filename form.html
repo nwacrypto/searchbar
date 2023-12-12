@@ -1,1 +1,80 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Data Form</title>
+</head>
+<body>
+    <h1>Add Data</h1>
+
+    <form id="dataForm">
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea>
+
+        <button type="button" onclick="generateTitle()">Generate Title</button>
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" readonly required>
+
+        <button type="button" onclick="addData()">Add Data</button>
+    </form>
+
+    <script>
+
+      function generateRandomString(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        result += characters.charAt(randomIndex);
+    }
+
+    return result;
+}
+
+function generateTitle() {
+    const prefix = 'UGB';
+    const randomString = generateRandomString(7);
+    const generatedTitle = `${prefix}-${randomString}`;
+    document.getElementById('title').value = generatedTitle;
+}
+
+function addData() {
+    const title = document.getElementById('title').value;
+    const description = document.getElementById('description').value;
+
+    if (title && description) {
+        // Fetch existing data from data.json
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                // Add new data
+                data.push({ title, description });
+
+                // Update data.json with the new data
+                fetch('data.json', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(() => {
+                    alert('Data added successfully!');
+                    // Clear the form
+                    document.getElementById('title').value = '';
+                    document.getElementById('description').value = '';
+                })
+                .catch(error => console.error('Error updating data.json:', error));
+            })
+            .catch(error => console.error('Error fetching data.json:', error));
+    } else {
+        alert('Please generate a title and provide a description.');
+    }
+}
+
+    </script>
+</body>
+</html>
