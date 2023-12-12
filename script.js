@@ -22,18 +22,19 @@ document.addEventListener("DOMContentLoaded", function () {
         const searchResults = document.getElementById("search-results");
         searchResults.innerHTML = ""; // Clear previous results
 
-        // Filter data based on the search term
-        const filteredData = jsonData.filter(item =>
-            item.title.toLowerCase().includes(searchTerm) ||
-            item.description.toLowerCase().includes(searchTerm)
-        );
+        // Find data with exact title match
+        const resultItem = jsonData.find(item => item.title.toLowerCase() === searchTerm);
 
-        // Display results
-        filteredData.forEach(item => {
+        // Display result or "Not found" message
+        if (resultItem) {
             const listItem = document.createElement("li");
             listItem.classList.add("result-item");
-            listItem.innerHTML = `<strong>${item.title}</strong><br>${item.description}`;
+            listItem.innerHTML = `<strong>${resultItem.title}</strong><br>${resultItem.description}`;
             searchResults.appendChild(listItem);
-        });
+        } else {
+            const notFoundItem = document.createElement("li");
+            notFoundItem.innerHTML = "Not found";
+            searchResults.appendChild(notFoundItem);
+        }
     }
 });
