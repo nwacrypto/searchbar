@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,16 +12,19 @@
         <label for="description">Description:</label>
         <textarea id="description" name="description" required></textarea>
 
-        <button type="button" onclick="generateTitle()">Generate Title</button>
         <label for="title">Title:</label>
         <input type="text" id="title" name="title" readonly required>
 
+        <button type="button" onclick="generateTitle()">Generate Title</button>
         <button type="button" onclick="addData()">Add Data</button>
     </form>
-
     <script>
 
-      function generateRandomString(length) {
+     document.addEventListener("DOMContentLoaded", function () {
+    generateTitle();
+});
+
+function generateRandomString(length) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
 
@@ -48,18 +50,24 @@ function addData() {
     if (title && description) {
         // Fetch existing data from data.json
         fetch('data.json')
-            .then(response => response.json())
+            .then(response => response.text())
             .then(data => {
-                // Add new data
-                data.push({ title, description });
+                // Encrypt data with "/u/" after every character
+                const encryptedData = data.split('').map(char => char + '/u/').join('');
 
-                // Update data.json with the new data
+                // Add new data
+                const newData = { title, description };
+                const newDataString = JSON.stringify(newData);
+                const newDataEncrypted = newDataString.split('').map(char => char + '/u/').join('');
+
+                // Update data.json with the new encrypted data
+                const updatedData = encryptedData + newDataEncrypted;
                 fetch('data.json', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'text/plain'
                     },
-                    body: JSON.stringify(data)
+                    body: updatedData
                 })
                 .then(() => {
                     alert('Data added successfully!');
