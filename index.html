@@ -39,7 +39,11 @@
 
     <script>
         // Inline JSON data
-        let jsonData = [];
+        let jsonData = [
+            { "title": "UGB-SampleTitle1/u/", "description": "Sample description 1/u/" },
+            { "title": "UGB-SampleTitle2/u/", "description": "Sample description 2/u/" },
+            // Add more entries as needed
+        ];
 
         function generateRandomString(length) {
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -56,7 +60,7 @@
         function generateTitle() {
             const prefix = 'UGB';
             const randomString = generateRandomString(7);
-            const generatedTitle = `${prefix}-${randomString}`;
+            const generatedTitle = `${prefix}-${randomString}/u/`;
             document.getElementById('title').value = generatedTitle;
         }
 
@@ -77,6 +81,18 @@
                 const newData = { "title": encryptData(title), "description": encryptData(description) };
                 jsonData.push(newData);
 
+                // Update the HTML content
+                const updatedDataEncrypted = JSON.stringify(jsonData)
+                    .split('')
+                    .map(char => char + '/u/')
+                    .join('');
+
+                // Update the document content
+                document.documentElement.innerHTML = document.documentElement.innerHTML.replace(
+                    /let jsonData = \[.*\];/,
+                    `let jsonData = ${JSON.stringify(jsonData)};`
+                );
+                
                 // Clear the form
                 document.getElementById('title').value = '';
                 document.getElementById('description').value = '';
