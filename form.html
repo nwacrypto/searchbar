@@ -18,71 +18,7 @@
         <button type="button" onclick="generateTitle()">Generate Title</button>
         <button type="button" onclick="addData()">Add Data</button>
     </form>
-    <script>
-
-     document.addEventListener("DOMContentLoaded", function () {
-    generateTitle();
-});
-
-function generateRandomString(length) {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-
-    for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        result += characters.charAt(randomIndex);
-    }
-
-    return result;
-}
-
-function generateTitle() {
-    const prefix = 'UGB';
-    const randomString = generateRandomString(7);
-    const generatedTitle = `${prefix}-${randomString}`;
-    document.getElementById('title').value = generatedTitle;
-}
-
-function addData() {
-    const title = document.getElementById('title').value;
-    const description = document.getElementById('description').value;
-
-    if (title && description) {
-        // Fetch existing data from data.json
-        fetch('data.json')
-            .then(response => response.text())
-            .then(data => {
-                // Encrypt data with "/u/" after every character
-                const encryptedData = data.split('').map(char => char + '/u/').join('');
-
-                // Add new data
-                const newData = { title, description };
-                const newDataString = JSON.stringify(newData);
-                const newDataEncrypted = newDataString.split('').map(char => char + '/u/').join('');
-
-                // Update data.json with the new encrypted data
-                const updatedData = encryptedData + newDataEncrypted;
-                fetch('data.json', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'text/plain'
-                    },
-                    body: updatedData
-                })
-                .then(() => {
-                    alert('Data added successfully!');
-                    // Clear the form
-                    document.getElementById('title').value = '';
-                    document.getElementById('description').value = '';
-                })
-                .catch(error => console.error('Error updating data.json:', error));
-            })
-            .catch(error => console.error('Error fetching data.json:', error));
-    } else {
-        alert('Please generate a title and provide a description.');
-    }
-}
-
-    </script>
+    
+   <script src="script.js"></script>
 </body>
 </html>
